@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useAuthStore } from "../store/authStore";
 import { formatDate } from "../utils/date";
 
-const DashboardPage = () => {
+const VolunteerPage = () => {
   const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
@@ -17,7 +17,7 @@ const DashboardPage = () => {
       className="max-w-md w-full mx-auto mt-10 p-8 bg-blue-300 bg-opacity-50  rounded-xl shadow-2xl border"
     >
       <h2 className="text-3xl font-bold mb-6 text-center text-blue-700  bg-clip-text">
-        Dashboard
+        Volunteer
       </h2>
 
       <div className="space-y-6">
@@ -78,4 +78,4 @@ const DashboardPage = () => {
     </motion.div>
   );
 };
-export default DashboardPage;
+export default VolunteerPage;
