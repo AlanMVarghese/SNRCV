@@ -31,6 +31,18 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    helptitle: {
+      type: String,
+      default: null,
+    },
+    helpdescription: {
+      type: String,
+      default: null,
+    },
+    additional: {
+      type: String,
+      default: null,
+    },
     resetPasswordToken: String,
     resetPasswordExpiresAt: Date,
     verificationToken: String,

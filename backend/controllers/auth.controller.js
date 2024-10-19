@@ -71,12 +71,10 @@ export const verifyEmail = async (req, res) => {
     });
 
     if (!user) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Invalid or expired verification code",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired verification code",
+      });
     }
 
     user.isVerified = true;
@@ -166,12 +164,10 @@ export const forgotPassword = async (req, res) => {
       `${process.env.CLIENT_URL}/reset-password/${resetToken}`
     );
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Password reset link sent to your email",
-      });
+    res.status(200).json({
+      success: true,
+      message: "Password reset link sent to your email",
+    });
   } catch (error) {
     console.log("Error in forgotPassword ", error);
     res.status(400).json({ success: false, message: error.message });
@@ -225,6 +221,29 @@ export const checkAuth = async (req, res) => {
     res.status(200).json({ success: true, user });
   } catch (error) {
     console.log("Error in checkAuth ", error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+export const help = async (req, res) => {
+  const { email, helptitle, helpdescription, additional } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+    user.helptitle = helptitle;
+    user.helpdescription = helpdescription;
+    user.additional = additional;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Help req send",
+    });
+  } catch (error) {
+    console.log("Error in sending help req ", error);
     res.status(400).json({ success: false, message: error.message });
   }
 };

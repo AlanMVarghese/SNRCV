@@ -1,12 +1,13 @@
 import express from "express";
 import {
-	login,
-	logout,
-	signup,
-	verifyEmail,
-	forgotPassword,
-	resetPassword,
-	checkAuth,
+  login,
+  logout,
+  signup,
+  verifyEmail,
+  forgotPassword,
+  resetPassword,
+  checkAuth,
+  help,
 } from "../controllers/auth.controller.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 
@@ -17,7 +18,7 @@ router.get("/check-auth", verifyToken, checkAuth);
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
-
+router.post("/citizens", help);
 router.post("/verify-email", verifyEmail);
 router.post("/forgot-password", forgotPassword);
 
