@@ -35,7 +35,7 @@ const RedirectAuthenticatedUser = ({ children }) => {
   if (isAuthenticated && user.isVerified && user.category == "Volunteer") {
     return <Navigate to="/volunteers" replace />;
   }
-  if (isAuthenticated && user.isVerified && user.category == "citizens") {
+  if (isAuthenticated && user.isVerified && user.category == "Senior Citizen") {
     return <Navigate to="/citizens" replace />;
   }
 
