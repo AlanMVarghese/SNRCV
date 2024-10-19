@@ -33,7 +33,7 @@ const CitizenPage = () => {
           <p className="text-black">Name: {user.name}</p>
           <p className="text-black">Email: {user.email}</p>
           <p className="text-black">Contact No: {user.contactno}</p>
-          <p className="text-black">Email: {user.category}</p>
+          <p className="text-black">Category: {user.category}</p>
         </motion.div>
         <motion.div
           className="p-4 bg-white rounded-lg border "
