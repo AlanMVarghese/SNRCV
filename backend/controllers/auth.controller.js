@@ -233,9 +233,52 @@ export const help = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Invalid credentials" });
     }
-    user.helptitle = helptitle;
-    user.helpdescription = helpdescription;
-    user.additional = additional;
+    if (user.helpstatus) {
+      user.helptitle = helptitle;
+      user.helpdescription = helpdescription;
+      user.additional = additional;
+      user.helpstatus = false;
+    } else {
+      user.helptitle = null;
+      user.helpdescription = null;
+      user.additional = null;
+      user.helpstatus = true;
+    }
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Help req send",
+    });
+  } catch (error) {
+    console.log("Error in sending help req ", error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+export const getProducts = async (req, res) => {
+  try {
+    const products = await User.find({ category: "Senior Citizen" });
+    res.status(200).json({ success: true, data: products });
+  } catch (error) {
+    console.log("error in fetching products:", error.message);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+export const vhelp = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+    if (user.helpstatus) {
+      user.helpstatus = false;
+    } else {
+      user.helpstatus = true;
+    }
     await user.save();
 
     res.status(200).json({

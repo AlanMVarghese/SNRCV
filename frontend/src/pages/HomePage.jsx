@@ -11,14 +11,14 @@ const HomePage = () => {
             <Link to="/">
               <li className="hover:text-gray-300 cursor-pointer">Home</li>
             </Link>
-            <Link to="/stories">
-              <li className="hover:text-gray-300 cursor-pointer">Stories</li>
-            </Link>
             <Link to="/login">
               <li className="hover:text-gray-300 cursor-pointer">Login</li>
             </Link>
             <Link to="/signup">
               <li className="hover:text-gray-300 cursor-pointer">Register</li>
+            </Link>
+            <Link to="/feedback">
+              <li className="hover:text-gray-300 cursor-pointer">Feedback</li>
             </Link>
           </ul>
         </nav>
@@ -41,19 +41,6 @@ const HomePage = () => {
         {/* Features Section */}
         <section className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="p-8 bg-white rounded-lg shadow-md text-center">
-            <h2 className="text-2xl font-bold mb-4">
-              Hundreds of stories to tell
-            </h2>
-            <p className="text-gray-600 mb-3">
-              "Hundreds of stories to tell, filled with joy and gratitude!"
-            </p>
-            <Link to="/stories">
-              <button className="px-6 py-3 bg-blue-700 text-white rounded-full hover:bg-blue-600 transition duration-300">
-                Write a story
-              </button>
-            </Link>
-          </div>
-          <div className="p-8 bg-white rounded-lg shadow-md text-center">
             <h2 className="text-2xl font-bold mb-4">Start Volunteering</h2>
             <p className="text-gray-600 mb-3">
               "Make a difference today—start volunteering!"
@@ -67,11 +54,22 @@ const HomePage = () => {
           <div className="p-8 bg-white rounded-lg shadow-md text-center">
             <h2 className="text-2xl font-bold mb-4">Ask Help</h2>
             <p className="text-gray-600 mb-3">
-              "Seeking help is a sign of strength."
+              "Seeking help is a sign of strength!"
             </p>
             <Link to="/login">
               <button className="px-6 py-3 bg-blue-700 text-white rounded-full hover:bg-blue-600 transition duration-300">
                 Need Help
+              </button>
+            </Link>
+          </div>
+          <div className="p-8 bg-white rounded-lg shadow-md text-center">
+            <h2 className="text-2xl font-bold mb-4">Write Feedback</h2>
+            <p className="text-gray-600 mb-3">
+              "Give us you valuable feedback!"
+            </p>
+            <Link to="/feedback">
+              <button className="px-6 py-3 bg-blue-700 text-white rounded-full hover:bg-blue-600 transition duration-300">
+                Feedback
               </button>
             </Link>
           </div>

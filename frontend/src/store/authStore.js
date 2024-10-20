@@ -159,4 +159,39 @@ export const useAuthStore = create((set) => ({
       throw error;
     }
   },
+
+  fetchProducts: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/volunteers`);
+      if (response.data.success) {
+        set({ products: response.data.data }); // Set products to the response data
+      } else {
+        console.error("Fetch Products Error:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      set({
+        error: error.response?.data?.message || "Error fetching products",
+      });
+    }
+  },
+
+  vhelp: async (email) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axios.post(`${API_URL}/volunteers`, {
+        email,
+      });
+      set({
+        message: response.data.message,
+        isLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.response.data.message || "Error in help",
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
 }));
