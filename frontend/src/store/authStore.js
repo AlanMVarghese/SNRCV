@@ -16,7 +16,38 @@ export const useAuthStore = create((set) => ({
   isCheckingAuth: true,
   message: null,
 
-  signup: async (email, password, name, contactno, category) => {
+  // signup: async (email, password, name, contactno, category) => {
+  //   set({ isLoading: true, error: null });
+  //   try {
+  //     const response = await axios.post(`${API_URL}/signup`, {
+  //       email,
+  //       password,
+  //       name,
+  //       contactno,
+  //       category,
+  //     });
+  //     set({
+  //       user: response.data.user,
+  //       isAuthenticated: true,
+  //       isLoading: false,
+  //     });
+  //   } catch (error) {
+  //     set({
+  //       error: error.response.data.message || "Error signing up",
+  //       isLoading: false,
+  //     });
+  //     throw error;
+  //   }
+  // },
+  signup: async (
+    email,
+    password,
+    name,
+    contactno,
+    category,
+    skills = null,
+    location = null
+  ) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(`${API_URL}/signup`, {
@@ -25,7 +56,10 @@ export const useAuthStore = create((set) => ({
         name,
         contactno,
         category,
+        skills: category === "Volunteer" ? skills : null, // Add skills if Volunteer
+        location: category === "Volunteer" ? location : null, // Add location if Volunteer
       });
+
       set({
         user: response.data.user,
         isAuthenticated: true,
@@ -39,6 +73,35 @@ export const useAuthStore = create((set) => ({
       throw error;
     }
   },
+
+  signout: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      // Call the backend API to handle signout, such as removing cookies
+      await axios.post(`${API_URL}/logout`);
+
+      // Remove the token and clear user state
+      localStorage.removeItem("userToken"); // Clear token from localStorage
+      set({
+        user: null,
+        isAuthenticated: false,
+        error: null,
+        isLoading: false,
+      });
+
+      // Optionally, you can redirect the user to the login page after signing out
+      window.location.href = "/login"; // Redirect to login page after signout
+
+      console.log("User signed out successfully");
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || "Error signing out",
+        isLoading: false,
+      });
+      console.error("Signout Error:", error);
+    }
+  },
+
   login: async (email, password) => {
     set({ isLoading: true, error: null });
     try {

@@ -10,8 +10,118 @@ import {
 } from "../mailtrap/emails.js";
 import { User } from "../models/user.model.js";
 
+// export const signup = async (req, res) => {
+//   const { email, password, name, contactno, category, skills } = req.body;
+
+//   try {
+//     if (!email || !password || !name || !contactno || !category) {
+//       throw new Error("All fields are required");
+//     }
+
+//     const userAlreadyExists = await User.findOne({ email });
+//     console.log("userAlreadyExists", userAlreadyExists);
+
+//     if (userAlreadyExists) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "User already exists" });
+//     }
+
+//     const hashedPassword = await bcryptjs.hash(password, 10);
+//     const verificationToken = Math.floor(
+//       100000 + Math.random() * 900000
+//     ).toString();
+
+//     const user = new User({
+//       email,
+//       password: hashedPassword,
+//       name,
+//       contactno,
+//       category,
+//       verificationToken,
+//       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
+//     });
+
+//     await user.save();
+
+//     // jwt
+//     generateTokenAndSetCookie(res, user._id);
+
+//     await sendVerificationEmail(user.email, verificationToken);
+
+//     res.status(201).json({
+//       success: true,
+//       message: "User created successfully",
+//       user: {
+//         ...user._doc,
+//         password: undefined,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({ success: false, message: error.message });
+//   }
+// };
+
+// export const signup = async (req, res) => {
+//   const { email, password, name, contactno, category, skills } = req.body;
+
+//   try {
+//     if (!email || !password || !name || !contactno || !category) {
+//       throw new Error("All fields are required");
+//     }
+
+//     const userAlreadyExists = await User.findOne({ email });
+//     if (userAlreadyExists) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "User already exists" });
+//     }
+
+//     const hashedPassword = await bcryptjs.hash(password, 10);
+//     const verificationToken = Math.floor(
+//       100000 + Math.random() * 900000
+//     ).toString();
+
+//     // If the category is 'Volunteer', add skills to the user object
+//     const userData = {
+//       email,
+//       password: hashedPassword,
+//       name,
+//       contactno,
+//       category,
+//       verificationToken,
+//       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
+//     };
+
+//     if (category === "Volunteer") {
+//       userData.skills = skills || []; // Ensure skills are added if provided
+//     } else {
+//       userData.skills = null; // If it's a Senior Citizen, set skills to null
+//     }
+
+//     const user = new User(userData);
+//     await user.save();
+
+//     // Generate JWT and send verification email
+//     generateTokenAndSetCookie(res, user._id);
+//     await sendVerificationEmail(user.email, verificationToken);
+
+//     res.status(201).json({
+//       success: true,
+//       message: "User created successfully",
+//       user: {
+//         ...user._doc,
+//         password: undefined, // Exclude password from response
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({ success: false, message: error.message });
+//   }
+// };
+
 export const signup = async (req, res) => {
-  const { email, password, name, contactno, category } = req.body;
+  const { email, password, name, contactno, category, skills, location } =
+    req.body;
 
   try {
     if (!email || !password || !name || !contactno || !category) {
@@ -38,13 +148,15 @@ export const signup = async (req, res) => {
       name,
       contactno,
       category,
+      skills: category === "Volunteer" ? skills : [], // Save skills for Volunteer
+      location: category === "Volunteer" ? location : null, // Save location for Volunteer
       verificationToken,
       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
     });
 
     await user.save();
 
-    // jwt
+    // Generate JWT and set cookie
     generateTokenAndSetCookie(res, user._id);
 
     await sendVerificationEmail(user.email, verificationToken);
@@ -225,7 +337,7 @@ export const checkAuth = async (req, res) => {
   }
 };
 export const help = async (req, res) => {
-  const { email, helptitle, helpdescription, additional } = req.body;
+  const { email, helptitle, helpdescription, additional, location } = req.body;
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -238,6 +350,7 @@ export const help = async (req, res) => {
       user.helpdescription = helpdescription;
       user.additional = additional;
       user.helpstatus = false;
+      user.location = location;
     } else {
       user.helptitle = null;
       user.helpdescription = null;
