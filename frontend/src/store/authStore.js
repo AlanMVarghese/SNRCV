@@ -16,29 +16,6 @@ export const useAuthStore = create((set) => ({
   isCheckingAuth: true,
   message: null,
 
-  // signup: async (email, password, name, contactno, category) => {
-  //   set({ isLoading: true, error: null });
-  //   try {
-  //     const response = await axios.post(`${API_URL}/signup`, {
-  //       email,
-  //       password,
-  //       name,
-  //       contactno,
-  //       category,
-  //     });
-  //     set({
-  //       user: response.data.user,
-  //       isAuthenticated: true,
-  //       isLoading: false,
-  //     });
-  //   } catch (error) {
-  //     set({
-  //       error: error.response.data.message || "Error signing up",
-  //       isLoading: false,
-  //     });
-  //     throw error;
-  //   }
-  // },
   signup: async (
     email,
     password,
@@ -201,7 +178,7 @@ export const useAuthStore = create((set) => ({
       throw error;
     }
   },
-  help: async (email, helptitle, helpdescription, additional) => {
+  help: async (email, helptitle, helpdescription, additional, location) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(`${API_URL}/citizens`, {
@@ -209,6 +186,7 @@ export const useAuthStore = create((set) => ({
         helptitle,
         helpdescription,
         additional,
+        location,
       });
       set({
         message: response.data.message,
@@ -239,11 +217,33 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  vhelp: async (email) => {
+  // vhelp: async (helpEmail) => {
+  //   set({ isLoading: true, error: null });
+  //   try {
+  //     const response = await axios.post(`${API_URL}/volunteers`, {
+  //       email: helpEmail,
+  //       volunteerName: user.name,       // Send volunteer's name
+  //       volunteerContact: user.contactno, // Send volunteer's contact number
+  //     });
+  //     set({
+  //       message: response.data.message,
+  //       isLoading: false,
+  //     });
+  //   } catch (error) {
+  //     set({
+  //       error: error.response.data.message || "Error in accepting help request",
+  //       isLoading: false,
+  //     });
+  //     throw error;
+  //   }
+  // },
+  vhelp: async ({ email, volunteerName, volunteerContact }) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(`${API_URL}/volunteers`, {
         email,
+        volunteerName,
+        volunteerContact,
       });
       set({
         message: response.data.message,
@@ -252,6 +252,26 @@ export const useAuthStore = create((set) => ({
     } catch (error) {
       set({
         error: error.response.data.message || "Error in help",
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+
+  markHelpCompleted: async (email) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axios.post(`${API_URL}/mark-help-completed`, {
+        email,
+      });
+      set({
+        message: response.data.message,
+        isLoading: false,
+      });
+    } catch (error) {
+      set({
+        error:
+          error.response?.data?.message || "Error marking help as completed",
         isLoading: false,
       });
       throw error;

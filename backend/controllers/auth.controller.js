@@ -10,115 +10,6 @@ import {
 } from "../mailtrap/emails.js";
 import { User } from "../models/user.model.js";
 
-// export const signup = async (req, res) => {
-//   const { email, password, name, contactno, category, skills } = req.body;
-
-//   try {
-//     if (!email || !password || !name || !contactno || !category) {
-//       throw new Error("All fields are required");
-//     }
-
-//     const userAlreadyExists = await User.findOne({ email });
-//     console.log("userAlreadyExists", userAlreadyExists);
-
-//     if (userAlreadyExists) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "User already exists" });
-//     }
-
-//     const hashedPassword = await bcryptjs.hash(password, 10);
-//     const verificationToken = Math.floor(
-//       100000 + Math.random() * 900000
-//     ).toString();
-
-//     const user = new User({
-//       email,
-//       password: hashedPassword,
-//       name,
-//       contactno,
-//       category,
-//       verificationToken,
-//       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
-//     });
-
-//     await user.save();
-
-//     // jwt
-//     generateTokenAndSetCookie(res, user._id);
-
-//     await sendVerificationEmail(user.email, verificationToken);
-
-//     res.status(201).json({
-//       success: true,
-//       message: "User created successfully",
-//       user: {
-//         ...user._doc,
-//         password: undefined,
-//       },
-//     });
-//   } catch (error) {
-//     res.status(400).json({ success: false, message: error.message });
-//   }
-// };
-
-// export const signup = async (req, res) => {
-//   const { email, password, name, contactno, category, skills } = req.body;
-
-//   try {
-//     if (!email || !password || !name || !contactno || !category) {
-//       throw new Error("All fields are required");
-//     }
-
-//     const userAlreadyExists = await User.findOne({ email });
-//     if (userAlreadyExists) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "User already exists" });
-//     }
-
-//     const hashedPassword = await bcryptjs.hash(password, 10);
-//     const verificationToken = Math.floor(
-//       100000 + Math.random() * 900000
-//     ).toString();
-
-//     // If the category is 'Volunteer', add skills to the user object
-//     const userData = {
-//       email,
-//       password: hashedPassword,
-//       name,
-//       contactno,
-//       category,
-//       verificationToken,
-//       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
-//     };
-
-//     if (category === "Volunteer") {
-//       userData.skills = skills || []; // Ensure skills are added if provided
-//     } else {
-//       userData.skills = null; // If it's a Senior Citizen, set skills to null
-//     }
-
-//     const user = new User(userData);
-//     await user.save();
-
-//     // Generate JWT and send verification email
-//     generateTokenAndSetCookie(res, user._id);
-//     await sendVerificationEmail(user.email, verificationToken);
-
-//     res.status(201).json({
-//       success: true,
-//       message: "User created successfully",
-//       user: {
-//         ...user._doc,
-//         password: undefined, // Exclude password from response
-//       },
-//     });
-//   } catch (error) {
-//     res.status(400).json({ success: false, message: error.message });
-//   }
-// };
-
 export const signup = async (req, res) => {
   const { email, password, name, contactno, category, skills, location } =
     req.body;
@@ -336,6 +227,39 @@ export const checkAuth = async (req, res) => {
     res.status(400).json({ success: false, message: error.message });
   }
 };
+// export const help = async (req, res) => {
+//   const { email, helptitle, helpdescription, additional, location } = req.body;
+//   try {
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Invalid credentials" });
+//     }
+//     if (user.helpstatus) {
+//       user.helptitle = helptitle;
+//       user.helpdescription = helpdescription;
+//       user.additional = additional;
+//       user.helpstatus = false;
+//       user.location = location;
+//     } else {
+//       user.helptitle = null;
+//       user.helpdescription = null;
+//       user.additional = null;
+//       user.helpstatus = true;
+//     }
+//     await user.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Help req send",
+//     });
+//   } catch (error) {
+//     console.log("Error in sending help req ", error);
+//     res.status(400).json({ success: false, message: error.message });
+//   }
+// };
+
 export const help = async (req, res) => {
   const { email, helptitle, helpdescription, additional, location } = req.body;
   try {
@@ -345,29 +269,38 @@ export const help = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Invalid credentials" });
     }
+
     if (user.helpstatus) {
+      // Requesting help, set help details
       user.helptitle = helptitle;
       user.helpdescription = helpdescription;
       user.additional = additional;
-      user.helpstatus = false;
       user.location = location;
+      user.helpstatus = false; // Set as active request
+      user.volunteerDetails = { isAccepted: false }; // Reset volunteer details
     } else {
+      // Cancel the help request
       user.helptitle = null;
       user.helpdescription = null;
       user.additional = null;
+      user.location = null;
       user.helpstatus = true;
+      user.volunteerDetails = {}; // Clear volunteer details
     }
     await user.save();
 
     res.status(200).json({
       success: true,
-      message: "Help req send",
+      message: "Help request updated",
+      helpstatus: user.helpstatus,
+      volunteerDetails: user.volunteerDetails,
     });
   } catch (error) {
-    console.log("Error in sending help req ", error);
-    res.status(400).json({ success: false, message: error.message });
+    console.log("Error in help request:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 export const getProducts = async (req, res) => {
   try {
     const products = await User.find({ category: "Senior Citizen" });
@@ -378,28 +311,217 @@ export const getProducts = async (req, res) => {
   }
 };
 
+// export const vhelp = async (req, res) => {
+//   const { email, volunteerName, volunteerContact } = req.body; // volunteer info included
+//   try {
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       return res.status(400).json({ success: false, message: "Invalid credentials" });
+//     }
+
+//     // Assign volunteer information if help request is accepted
+//     user.acceptedBy = { volunteerName, volunteerContact };
+//     user.helpstatus = false; // mark request as no longer needing help
+
+//     await user.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Help request accepted by volunteer",
+//     });
+//   } catch (error) {
+//     console.log("Error in accepting help request ", error);
+//     res.status(400).json({ success: false, message: error.message });
+//   }
+// };
+
+// export const vhelp = async (req, res) => {
+//   const { email, volunteerName, volunteerContact } = req.body;
+
+//   try {
+//     // Find the senior citizen request by email
+//     const user = await User.findOne({ email });
+//     if (!user || user.category !== "Senior Citizen") {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Help request not found" });
+//     }
+
+//     // Update with volunteer details
+//     user.volunteerDetails = {
+//       name: volunteerName,
+//       contact: volunteerContact,
+//     };
+//     user.helpstatus = false; // Mark the help as being handled
+//     await user.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Help request processed successfully",
+//     });
+//   } catch (error) {
+//     console.log("Error in processing help request:", error);
+//     res.status(500).json({ success: false, message: "Server error" });
+//   }
+// };
+
+// export const vhelp = async (req, res) => {
+//   const { email, volunteerName, volunteerContact } = req.body;
+//   try {
+//     // Find the senior citizen by email
+//     const seniorCitizen = await User.findOne({ email });
+//     if (!seniorCitizen) {
+//       return res.status(400).json({ success: false, message: "Senior citizen not found" });
+//     }
+
+//     // Check if the request has already been accepted
+//     if (!seniorCitizen.helpstatus) {
+//       return res.status(400).json({ success: false, message: "Help request already accepted" });
+//     }
+
+//     // Update help status and add volunteer details
+//     seniorCitizen.helpstatus = false;
+//     seniorCitizen.volunteerDetails = {
+//       name: volunteerName,
+//       contactno: volunteerContact,
+//     };
+
+//     await seniorCitizen.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Help request accepted",
+//     });
+//   } catch (error) {
+//     console.log("Error in vhelp ", error);
+//     res.status(400).json({ success: false, message: error.message });
+//   }
+// };
+// export const vhelp = async (req, res) => {
+//   const { email, volunteerName, volunteerContact } = req.body;
+
+//   try {
+//     const citizen = await User.findOne({ email, category: "Senior Citizen" });
+//     if (!citizen) {
+//       return res.status(400).json({ success: false, message: "Citizen not found" });
+//     }
+
+//     if (citizen.volunteerDetails?.isAccepted) {
+//       return res.status(400).json({ success: false, message: "This request is already accepted by another volunteer." });
+//     }
+
+//     // Update citizen with volunteer details
+//     citizen.volunteerDetails = {
+//       isAccepted: true,
+//       name: volunteerName,
+//       contactno: volunteerContact,
+//     };
+//     await citizen.save();
+
+//     res.status(200).json({ success: true, message: "Help request accepted" });
+//   } catch (error) {
+//     console.log("Error in vhelp:", error);
+//     res.status(500).json({ success: false, message: "Internal server error" });
+//   }
+// };
+
 export const vhelp = async (req, res) => {
-  const { email } = req.body;
+  const { email, volunteerName, volunteerContact } = req.body;
+
   try {
+    // Find the senior citizen by email
+    const seniorCitizen = await User.findOne({ email });
+
+    if (!seniorCitizen) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Senior citizen not found" });
+    }
+
+    // Check if the request is already accepted by a volunteer
+    if (seniorCitizen.volunteerDetails.isAccepted) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Help request already accepted" });
+    }
+
+    // Update senior's record with volunteer's details and acceptance
+    seniorCitizen.volunteerDetails = {
+      name: volunteerName,
+      contactno: volunteerContact,
+      isAccepted: true,
+    };
+    seniorCitizen.helpstatus = false; // Mark request as resolved
+
+    await seniorCitizen.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Help request accepted",
+    });
+  } catch (error) {
+    console.log("Error in vhelp ", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const markHelpCompleted = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Find the senior citizen by email
     const user = await User.findOne({ email });
+
     if (!user) {
       return res
         .status(400)
-        .json({ success: false, message: "Invalid credentials" });
+        .json({ success: false, message: "Senior citizen not found" });
     }
-    if (user.helpstatus) {
-      user.helpstatus = false;
-    } else {
-      user.helpstatus = true;
-    }
+
+    // Reset help request status and volunteer details
+    user.helptitle = null;
+    user.helpdescription = null;
+    user.additional = null;
+    user.location = null;
+    user.helpstatus = true;
     await user.save();
 
     res.status(200).json({
       success: true,
-      message: "Help req send",
+      message: "Help marked as completed",
     });
   } catch (error) {
-    console.log("Error in sending help req ", error);
-    res.status(400).json({ success: false, message: error.message });
+    console.log("Error in marking help as completed:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
+// export const markHelpCompleted = async (req, res) => {
+//   const { email } = req.body;
+
+//   try {
+//     // Find the senior citizen by email
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       return res.status(400).json({ success: false, message: "Senior citizen not found" });
+//     }
+
+//     // Reset the help status and clear all help-related fields and volunteer details
+//     user.helpstatus = true;
+//     user.helptitle = null;
+//     user.helpdescription = null;
+//     user.additional = null;
+//     user.volunteerDetails = { isAccepted: false, name: null, contactno: null };
+
+//     // Save changes
+//     await user.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Help marked as completed, request cleared.",
+//     });
+//   } catch (error) {
+//     console.log("Error in marking help as completed:", error);
+//     res.status(500).json({ success: false, message: "Internal server error" });
+//   }
+// };

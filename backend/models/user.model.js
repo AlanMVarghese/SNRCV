@@ -177,6 +177,15 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    acceptedBy: {
+      volunteerName: { type: String, default: null },
+      volunteerContact: { type: String, default: null },
+    },
+    volunteerDetails: {
+      name: { type: String, default: null },
+      contactno: { type: String, default: null },
+      isAccepted: { type: Boolean, default: false },
+    },
     resetPasswordToken: String,
     resetPasswordExpiresAt: Date,
     verificationToken: String,

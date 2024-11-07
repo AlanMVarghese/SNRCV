@@ -13,6 +13,8 @@ import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
 import VolunteerPage from "./pages/VolunteerPage";
 import CitizenPage from "./pages/CitizenPage";
+import VolunteerWelcomePage from "./pages/volunteerwelcomepage";
+import CitizenWelcomePage from "./pages/CitizenWelcomePage";
 
 // protect routes that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -63,6 +65,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/volunteerswelcome" element={<VolunteerWelcomePage />} />
+        <Route path="/citizenswelcome" element={<CitizenWelcomePage />} />
         <Route
           path="/volunteers"
           element={
@@ -71,6 +75,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/signup"
           element={

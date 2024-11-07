@@ -1247,7 +1247,7 @@ const SignUpPage = () => {
                 ))}
               </div>
 
-              <div className="relative mb-4">
+              {/* <div className="relative mb-4">
                 <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-700" />
                 <select
                   value={location}
@@ -1258,7 +1258,34 @@ const SignUpPage = () => {
                   <option value="" disabled hidden>
                     Select Location
                   </option>
-                  {/* Add your location options here */}
+                  Add your location options here
+                </select>
+              </div> */}
+              <div className="mb-4">
+                {/* <label htmlFor="location" className="block text-blue-700 mb-2">
+                  Location
+                </label> */}
+                <select
+                  id="location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select your location</option>
+                  <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                  <option value="Kollam">Kollam</option>
+                  <option value="Alappuzha">Alappuzha</option>
+                  <option value="Pathanamthitta">Pathanamthitta</option>
+                  <option value="Kottayam">Kottayam</option>
+                  <option value="Idukki">Idukki</option>
+                  <option value="Ernakulam">Ernakulam</option>
+                  <option value="Thrissur">Thrissur</option>
+                  <option value="Palakkad">Palakkad</option>
+                  <option value="Malappuram">Malappuram</option>
+                  <option value="Kozhikode">Kozhikode</option>
+                  <option value="Wayanad">Wayanad</option>
+                  <option value="Kannur">Kannur</option>
+                  <option value="Kasaragod">Kasaragod</option>
                 </select>
               </div>
             </>
